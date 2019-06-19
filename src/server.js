@@ -1,31 +1,22 @@
 import app from './app';
-
 import { PORT } from './config';
+import { ApolloServer } from 'apollo-server-express';
 
-app.listen(PORT, () => {
-  console.log(`Server listening at http://localhost:${PORT}`);
+import schema from './schema';
+import resolvers from './resolvers';
+import models from './models';
+
+const server = new ApolloServer({
+  typeDefs: schema,
+  resolvers,
+  context: {
+    models,
+    me: models.users[1],
+  },
 });
 
-// import app from './app';
+server.applyMiddleware({ app, path: '/graphql' });
 
-// import { PORT } from './config';
-
-// import { ApolloServer } from 'apollo-server-express';
-
-// const schema = ...
-// const resolvers = ...
-
-// const server = new ApolloServer({
-//   typeDefs: schema,
-//   resolvers,
-// });
-
-// server.applyMiddleware({ app, path: '/graphql' });
-
-// app.listen(PORT, () => {
-//   console.log(`Apollo Server on http://localhost:${PORT}/graphql`);
-// });
-
-// // app.listen(PORT, () => {
-// //   console.log(`Server listening at http://localhost:${PORT}`);
-// // });
+app.listen(PORT, () => {
+  console.log(`Apollo Server on http://localhost:${PORT}/graphql`);
+});
